@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eco Escapes Guides</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700&family=Fragment+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-body: 'Bricolage Grotesque', system-ui, sans-serif;
+    --font-mono: 'Fragment Mono', 'SF Mono', Consolas, monospace;
+    --bg: #faf7f0;
+    --surface: #ffffff;
+    --border: rgba(63, 94, 79, 0.12);
+    --text: #1f2d2a;
+    --text-dim: #5a7068;
+    --forest: #3F5E4F;
+    --sage: #7BA68B;
+    --sage-dim: rgba(123, 166, 139, 0.16);
+    --terracotta: #C9846B;
+    --warm: #C9B888;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse at 0% 0%, var(--sage-dim) 0%, transparent 55%),
+      radial-gradient(circle, rgba(63, 94, 79, 0.045) 1px, transparent 1px);
+    background-size: auto, 24px 24px;
+    color: var(--text);
+    font-family: var(--font-body);
+    padding: 64px 40px;
+    min-height: 100vh;
+  }
+  .container { max-width: 880px; margin: 0 auto; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 500;
+    letter-spacing: 1.4px; text-transform: uppercase;
+    color: var(--forest); background: var(--sage-dim);
+    padding: 6px 11px; border-radius: 3px; margin-bottom: 20px;
+  }
+  .badge::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--sage);
+  }
+  h1 {
+    font-size: 42px; font-weight: 700; letter-spacing: -1.2px;
+    color: var(--forest); margin-bottom: 10px;
+  }
+  .subtitle { color: var(--text-dim); font-family: var(--font-mono); font-size: 12px; margin-bottom: 22px; }
+  .description { font-size: 15px; line-height: 1.65; color: var(--text-dim); max-width: 700px; margin-bottom: 40px; }
+  .section { margin-bottom: 32px; }
+  .section-label {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+    letter-spacing: 1.6px; text-transform: uppercase; color: var(--forest);
+    margin-bottom: 12px; display: flex; align-items: center; gap: 10px;
+  }
+  .section-label .line { flex: 1; height: 1px; background: var(--border); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .guide-card {
+    background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--sage);
+    border-radius: 10px; padding: 16px 20px; text-decoration: none; color: var(--text);
+    transition: transform 0.2s, border-color 0.2s;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .guide-card:hover { transform: translateY(-1px); border-left-color: var(--forest); }
+  .guide-card .name { font-size: 15px; font-weight: 600; }
+  .guide-card .desc { font-size: 12.5px; color: var(--text-dim); line-height: 1.5; }
+  .guide-card .url { font-family: var(--font-mono); font-size: 10.5px; color: var(--sage); margin-top: 4px; }
+  .empty {
+    background: var(--surface); border: 1px dashed var(--border); border-radius: 10px;
+    padding: 16px 20px; font-size: 13px; color: var(--text-dim);
+  }
+  @media (max-width: 720px) {
+    body { padding: 36px 20px; }
+    h1 { font-size: 32px; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <span class="badge">Eco Escapes Guides</span>
+  <h1>Visual guides &amp; reference pages</h1>
+  <div class="subtitle">guides.ecoescape.com · v1 · April 2026</div>
+  <p class="description">Hosted reference pages for the Eco Escapes team, guests, owners, and prospects.
+  Pages are organized by audience. Bookmark the ones you reference often, or pin the URL in your workspace.</p>
+
+  <div class="section">
+    <div class="section-label"><span>Team</span><span class="line"></span></div>
+    <div class="grid">
+      <a class="guide-card" href="./team/drive-guide.html">
+        <div class="name">📁 Drive structure &amp; decision flow</div>
+        <div class="desc">Where things live in Drive, access tiers, and how to add / find / update / archive any document.</div>
+        <div class="url">team/drive-guide</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label"><span>Guests</span><span class="line"></span></div>
+    <div class="empty">No guest-facing pages yet. Future: pool rules, hot tub start-up, sauna safety.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-label"><span>Owners</span><span class="line"></span></div>
+    <div class="empty">No owner-facing pages yet. Future: onboarding walkthrough, owner portal guide.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-label"><span>Leads &amp; prospects</span><span class="line"></span></div>
+    <div class="empty">No lead-facing pages yet. Future: pitch one-pagers, ManyChat save-trigger destinations.</div>
+  </div>
+</div>
+</body>
+</html>

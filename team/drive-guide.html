@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eco Escapes — Drive Structure &amp; Decision Flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700&family=Fragment+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-body: 'Bricolage Grotesque', system-ui, sans-serif;
+    --font-mono: 'Fragment Mono', 'SF Mono', Consolas, monospace;
+
+    --bg: #faf7f0;
+    --bg-warm: #f5efe2;
+    --surface: #ffffff;
+    --surface-elevated: #fffdf7;
+    --surface-recessed: #f3ede0;
+    --border: rgba(63, 94, 79, 0.12);
+    --border-bright: rgba(63, 94, 79, 0.28);
+    --text: #1f2d2a;
+    --text-dim: #5a7068;
+    --text-soft: #8a9890;
+
+    --forest: #3F5E4F;
+    --forest-dim: rgba(63, 94, 79, 0.10);
+    --sage: #7BA68B;
+    --sage-dim: rgba(123, 166, 139, 0.16);
+    --cream: #FAF7F0;
+    --terracotta: #C9846B;
+    --terracotta-dim: rgba(201, 132, 107, 0.14);
+    --warm: #C9B888;
+    --warm-dim: rgba(201, 184, 136, 0.20);
+    --accent-soft: #e8dfc7;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #15201c;
+      --bg-warm: #1a2620;
+      --surface: #1f2d2a;
+      --surface-elevated: #243530;
+      --surface-recessed: #1a2420;
+      --border: rgba(123, 166, 139, 0.16);
+      --border-bright: rgba(123, 166, 139, 0.36);
+      --text: #ede8d8;
+      --text-dim: #a8b8af;
+      --text-soft: #7e8e85;
+      --forest-dim: rgba(123, 166, 139, 0.12);
+      --sage-dim: rgba(123, 166, 139, 0.18);
+      --terracotta-dim: rgba(201, 132, 107, 0.20);
+      --warm-dim: rgba(201, 184, 136, 0.16);
+      --accent-soft: rgba(232, 223, 199, 0.10);
+    }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(ellipse at 0% 0%, var(--sage-dim) 0%, transparent 55%),
+      radial-gradient(ellipse at 100% 100%, var(--warm-dim) 0%, transparent 50%),
+      radial-gradient(circle, rgba(63, 94, 79, 0.045) 1px, transparent 1px);
+    background-size: auto, auto, 24px 24px;
+    color: var(--text);
+    font-family: var(--font-body);
+    padding: 64px 40px;
+    min-height: 100vh;
+  }
+
+  .container { max-width: 1240px; margin: 0 auto; }
+
+  /* HEADER */
+  .page-header { margin-bottom: 44px; }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--forest);
+    background: var(--sage-dim);
+    padding: 6px 11px;
+    border-radius: 3px;
+    margin-bottom: 20px;
+  }
+
+  .badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--sage);
+  }
+
+  h1 {
+    font-size: 44px;
+    font-weight: 700;
+    letter-spacing: -1.2px;
+    line-height: 1.05;
+    color: var(--forest);
+    margin-bottom: 10px;
+    text-wrap: balance;
+  }
+
+  .subtitle {
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.4px;
+    margin-bottom: 22px;
+  }
+
+  .description {
+    font-size: 15.5px;
+    line-height: 1.65;
+    color: var(--text-dim);
+    max-width: 820px;
+  }
+
+  /* SECTION HEADINGS */
+  .section-marker {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin: 56px 0 24px;
+  }
+
+  .section-marker .num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--sage);
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .section-marker h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--forest);
+    letter-spacing: -0.6px;
+    line-height: 1.1;
+  }
+
+  .section-marker .line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    margin-bottom: 4px;
+    align-self: end;
+  }
+
+  .section-blurb {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-dim);
+    margin-bottom: 22px;
+    max-width: 820px;
+  }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    margin-bottom: 26px;
+    padding: 14px 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 12.5px;
+    color: var(--text);
+    font-family: var(--font-mono);
+  }
+
+  .swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  /* ROOT CARD */
+  .root-card {
+    background: var(--forest);
+    border-radius: 14px;
+    padding: 26px 32px;
+    color: var(--cream);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 4px 20px rgba(31, 45, 42, 0.10);
+    margin-bottom: 4px;
+  }
+
+  .root-icon {
+    width: 56px;
+    height: 56px;
+    background: rgba(250, 247, 240, 0.10);
+    border: 1px solid rgba(250, 247, 240, 0.22);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+  }
+
+  .root-meta {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: rgba(250, 247, 240, 0.62);
+    margin-bottom: 4px;
+  }
+
+  .root-name {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+  }
+
+  .root-desc {
+    margin-left: auto;
+    font-size: 13px;
+    color: rgba(250, 247, 240, 0.72);
+    text-align: right;
+    line-height: 1.5;
+    max-width: 260px;
+  }
+
+  /* SPINE */
+  .spine {
+    width: 2px;
+    height: 28px;
+    background: var(--border-bright);
+    margin: 0 auto;
+    position: relative;
+  }
+  .spine::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid var(--border-bright);
+  }
+
+  /* TOP-LEVEL FOLDER GRID */
+  .toplevel {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+
+  .folder-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--forest);
+    border-radius: 10px;
+    padding: 16px 18px;
+    transition: border-color 0.2s, transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .folder-card:hover {
+    border-color: var(--border-bright);
+    transform: translateY(-1px);
+  }
+
+  .folder-card.archive {
+    border-left-color: var(--warm);
+    background: var(--surface-recessed);
+  }
+
+  .folder-card .row1 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .folder-card .name {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.2px;
+    line-height: 1.25;
+  }
+
+  .folder-card .name .icon { margin-right: 6px; }
+
+  .folder-card .desc {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-dim);
+  }
+
+  .folder-card .ask {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--text-soft);
+    letter-spacing: 0.3px;
+    margin-top: 2px;
+  }
+
+  .folder-card .ask strong { color: var(--forest); font-weight: 500; }
+
+  .tier-badge {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 3px 7px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    font-weight: 500;
+    background: var(--forest);
+    color: var(--cream);
+  }
+
+  .tier-badge.archive { background: var(--warm); color: var(--text); }
+
+  /* EXPANSION SECTIONS */
+  .expansion {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 20px;
+    margin-bottom: 18px;
+  }
+
+  .expansion-anchor {
+    background: var(--surface-recessed);
+    border: 1px dashed var(--border-bright);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .expansion-anchor .label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--text-soft);
+  }
+
+  .expansion-anchor .name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--forest);
+  }
+
+  .expansion-anchor .hint {
+    font-size: 11.5px;
+    color: var(--text-dim);
+    line-height: 1.4;
+  }
+
+  .expansion-children { display: grid; gap: 10px; }
+
+  .child-row { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .child-row.cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+  .child-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--sage);
+    border-radius: 8px;
+    padding: 12px 14px;
+    position: relative;
+  }
+
+  .child-card.t3 { border-left-color: var(--warm); }
+  .child-card.t1 { border-left-color: var(--forest); }
+
+  .child-card::before {
+    content: '';
+    position: absolute;
+    left: -14px;
+    top: 50%;
+    width: 14px;
+    height: 1px;
+    background: var(--border-bright);
+  }
+
+  .child-card .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 3px;
+  }
+
+  .child-card .name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .child-card .mini-tier {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    color: var(--sage);
+    background: var(--sage-dim);
+    padding: 2px 6px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .child-card.t3 .mini-tier { color: #8a7028; background: var(--warm-dim); }
+  .child-card.t1 .mini-tier { color: var(--forest); background: var(--forest-dim); }
+
+  .child-card .desc {
+    font-size: 11.5px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  /* SUB-HEADING */
+  .subhead {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    color: var(--forest);
+    margin: 24px 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .subhead .line { flex: 1; height: 1px; background: var(--border); }
+
+  /* CALLOUT ROW */
+  .callout-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 28px;
+  }
+
+  .callout {
+    padding: 18px 22px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+
+  .callout.primary {
+    background: var(--accent-soft);
+    border-left: 3px solid var(--terracotta);
+    color: var(--text);
+  }
+
+  .callout.secondary {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .callout strong { color: var(--forest); font-weight: 600; }
+
+  .callout code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    background: var(--surface-recessed);
+    color: var(--forest);
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+  }
+
+  /* THREE RULES */
+  .three-rules {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .rule {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--sage);
+    border-radius: 10px;
+    padding: 16px 20px;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .rule:hover {
+    transform: translateY(-1px);
+    border-left-color: var(--forest);
+  }
+
+  .rule-num {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--sage);
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .rule-text {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* QUESTION CARD */
+  .question-card {
+    background: var(--forest);
+    color: var(--cream);
+    padding: 22px 28px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .question-card .q-label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: rgba(250, 247, 240, 0.62);
+  }
+
+  .question-card .q-text {
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: -0.4px;
+  }
+
+  /* DECISION LANES */
+  .lanes {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+
+  .lane {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+  }
+
+  .lane.create { border-color: var(--terracotta-dim); }
+
+  .lane-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .lane-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--sage-dim);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .lane.create .lane-icon { background: var(--terracotta-dim); }
+  .lane.archive-lane .lane-icon { background: var(--warm-dim); }
+  .lane.update .lane-icon { background: var(--accent-soft); }
+
+  .lane-title {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    line-height: 1.2;
+  }
+
+  .lane-name {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--forest);
+    letter-spacing: -0.2px;
+  }
+
+  /* STEP CARDS */
+  .step {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 12.5px;
+    line-height: 1.45;
+    color: var(--text);
+    position: relative;
+  }
+
+  .step .step-num {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    color: var(--sage);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+    font-weight: 500;
+  }
+
+  .step .step-text { font-weight: 500; }
+
+  .step .step-detail {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  .step .step-detail code {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    background: var(--forest-dim);
+    color: var(--forest);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  /* STOP banner */
+  .stop-banner {
+    background: var(--terracotta);
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  .stop-banner .stop-label {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0.85;
+    margin-bottom: 2px;
+  }
+
+  .stop-banner .stop-text {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+  }
+
+  /* CONNECTOR */
+  .connector {
+    height: 14px;
+    width: 2px;
+    background: var(--border-bright);
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .connector::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid var(--border-bright);
+  }
+
+  /* DECISION step (small diamond hint) */
+  .step.decision {
+    background: var(--accent-soft);
+    border-color: var(--warm);
+  }
+
+  .step.decision .step-num { color: #8a7028; }
+
+  /* OUTCOME card (success endpoint) */
+  .outcome {
+    background: var(--sage);
+    color: #fff;
+    padding: 12px 14px;
+    border-radius: 8px;
+    margin-top: 4px;
+    text-align: center;
+  }
+
+  .outcome .out-label {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    opacity: 0.85;
+    margin-bottom: 2px;
+  }
+
+  .outcome .out-text {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+  }
+
+  /* FOOTER */
+  .doc-footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-soft);
+    letter-spacing: 0.4px;
+  }
+
+  /* ANIMATION */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .root-card, .folder-card, .expansion, .callout, .rule, .lane, .question-card {
+    animation: fadeUp 0.45s ease-out both;
+    animation-delay: calc(var(--i, 0) * 0.04s);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-delay: 0ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 1080px) {
+    .lanes { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 900px) {
+    body { padding: 36px 20px; }
+    h1 { font-size: 32px; }
+    .toplevel { grid-template-columns: repeat(2, 1fr); }
+    .expansion { grid-template-columns: 1fr; }
+    .child-row.cols-3 { grid-template-columns: 1fr; }
+    .child-card::before { display: none; }
+    .callout-row { grid-template-columns: 1fr; }
+    .three-rules { grid-template-columns: 1fr; }
+    .root-card { flex-wrap: wrap; }
+    .root-card .root-desc { margin-left: 0; text-align: left; max-width: none; }
+    .question-card { flex-direction: column; gap: 4px; text-align: center; }
+  }
+
+  @media (max-width: 620px) {
+    .toplevel { grid-template-columns: 1fr; }
+    .lanes { grid-template-columns: 1fr; }
+    .legend { gap: 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <span class="badge">Eco Escapes Operating Guide</span>
+    <h1>Drive structure &amp; decision flow</h1>
+    <div class="subtitle">Folder map · Access tiers · Decision flow · Updated April 2026</div>
+    <p class="description">A single-page reference for how Google Drive is organized and how to add, find, update, or archive any document.
+    Section 1 shows where everything lives and who creates folders at each level. Section 2 walks through every decision you'll make about a doc.
+    When in doubt, this guide answers it — or tells you who to ask.</p>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 1 — FOLDER MAP                                       -->
+  <!-- ============================================================ -->
+
+  <div class="section-marker">
+    <span class="num">Section 01</span>
+    <h2>Where things live</h2>
+    <span class="line"></span>
+  </div>
+  <p class="section-blurb">Top-level Drive folders, organized by purpose. Every top-level folder is Tier 1 — only Chad creates new ones at this level.
+  The colored bar inside the SOPs (Master) and Properties expansions shows the deeper tiers (who can create subfolders inside).</p>
+
+  <div class="legend">
+    <div class="legend-item"><span class="swatch" style="background:#3F5E4F"></span>Tier 1 — Chad creates</div>
+    <div class="legend-item"><span class="swatch" style="background:#7BA68B"></span>Tier 2 — Property lead creates</div>
+    <div class="legend-item"><span class="swatch" style="background:#C9B888"></span>Tier 3 — Anyone with edit access</div>
+    <div class="legend-item"><span class="swatch" style="background:#e8dfc7;border:1px solid #C9B888"></span>Archive — never delete</div>
+  </div>
+
+  <!-- ROOT -->
+  <div class="root-card" style="--i:0">
+    <div class="root-icon">📁</div>
+    <div>
+      <div class="root-meta">Drive root</div>
+      <div class="root-name">Eco Escapes Main Folder</div>
+    </div>
+    <div class="root-desc">All operational and property-facing documents live inside this tree. Nothing for Eco Escapes lives outside it.</div>
+  </div>
+
+  <div class="spine"></div>
+
+  <!-- TOP-LEVEL FOLDERS (all Tier 1 per source) -->
+  <div class="toplevel">
+    <div class="folder-card" style="--i:1">
+      <div class="row1">
+        <div class="name"><span class="icon">📋</span>SOPs (Master)</div>
+        <span class="tier-badge">Tier 1</span>
+      </div>
+      <div class="desc">All SOPs and playbooks for the business. Source of truth for every recurring process.</div>
+      <div class="ask">Ask: <strong>Azza or Eunice</strong> · Chad</div>
+    </div>
+
+    <div class="folder-card" style="--i:2">
+      <div class="row1">
+        <div class="name"><span class="icon">🏠</span>Properties</div>
+        <span class="tier-badge">Tier 1</span>
+      </div>
+      <div class="desc">One folder per property — photos, guides, licence, owner-specific docs.</div>
+      <div class="ask">Ask: <strong>Property lead</strong></div>
+    </div>
+
+    <div class="folder-card" style="--i:3">
+      <div class="row1">
+        <div class="name"><span class="icon">📋</span>Owner Onboarding</div>
+        <span class="tier-badge">Tier 1</span>
+      </div>
+      <div class="desc">Quote, agreement, supply list, owner welcome packets — the full launch packet.</div>
+      <div class="ask">Ask: <strong>Chad</strong></div>
+    </div>
+
+    <div class="folder-card" style="--i:4">
+      <div class="row1">
+        <div class="name"><span class="icon">📣</span>Marketing &amp; Social</div>
+        <span class="tier-badge">Tier 1</span>
+      </div>
+      <div class="desc">Listing copy, social assets, captions, PR, brand campaigns.</div>
+      <div class="ask">Ask: <strong>Chad</strong></div>
+    </div>
+
+    <div class="folder-card" style="--i:5">
+      <div class="row1">
+        <div class="name"><span class="icon">💰</span>Finance</div>
+        <span class="tier-badge">Tier 1</span>
+      </div>
+      <div class="desc">Statements, allocations, owner reports, monthly records, invoices.</div>
+      <div class="ask">Ask: <strong>Jayco</strong></div>
+    </div>
+
+    <div class="folder-card" style="--i:6">
+      <div class="row1">
+        <div class="name"><span class="icon">🎤</span>Events</div>
+        <span class="tier-badge">Tier 1</span>
+      </div>
+      <div class="desc">Webinars, podcast assets, conference materials, partner events.</div>
+      <div class="ask">Ask: <strong>Chad</strong></div>
+    </div>
+
+    <div class="folder-card" style="--i:7">
+      <div class="row1">
+        <div class="name"><span class="icon">🏢</span>Brand &amp; Corporate</div>
+        <span class="tier-badge">Tier 1</span>
+      </div>
+      <div class="desc">Logo files, brand guide, corporate registrations, insurance certificates.</div>
+      <div class="ask">Ask: <strong>Chad</strong></div>
+    </div>
+
+    <div class="folder-card" style="--i:8">
+      <div class="row1">
+        <div class="name"><span class="icon">👥</span>Team</div>
+        <span class="tier-badge">Tier 1</span>
+      </div>
+      <div class="desc">HR, contracts, team rosters, training materials, schedules.</div>
+      <div class="ask">Ask: <strong>Chad</strong></div>
+    </div>
+
+    <div class="folder-card archive" style="--i:9">
+      <div class="row1">
+        <div class="name"><span class="icon">📚</span>ARCHIVE</div>
+        <span class="tier-badge archive">Archive</span>
+      </div>
+      <div class="desc">Old documents and deprecated SOPs. Read-only. Anything obsolete moves here — never deleted.</div>
+      <div class="ask">Ask: <strong>Chad</strong> before anything is removed</div>
+    </div>
+  </div>
+
+  <!-- EXPANSION: SOPs (Master) -->
+  <div class="subhead">
+    <span>Inside SOPs (Master)</span>
+    <span class="line"></span>
+  </div>
+
+  <div class="expansion" style="--i:10">
+    <div class="expansion-anchor">
+      <div class="label">📋 SOPs (Master) · Tier 1</div>
+      <div class="name">3 working subfolders</div>
+      <div class="hint">All team-facing procedures, organized by domain. Search SOP_CANONICAL_INDEX.gsheet before browsing.</div>
+    </div>
+    <div class="expansion-children">
+      <div class="child-row cols-3">
+        <div class="child-card">
+          <div class="row">
+            <div class="name">🏠 Operations</div>
+            <span class="mini-tier">Tier 2</span>
+          </div>
+          <div class="desc">Field ops, guest comms, turnover, maintenance procedures. Property leads can add SOPs here.</div>
+        </div>
+        <div class="child-card t1">
+          <div class="row">
+            <div class="name">📜 Policies &amp; Agreements</div>
+            <span class="mini-tier">Tier 1</span>
+          </div>
+          <div class="desc">Renters Agreement, House Rules, addenda for pool / hot tub / sauna / fire feature.</div>
+        </div>
+        <div class="child-card t1">
+          <div class="row">
+            <div class="name">💰 Finance</div>
+            <span class="mini-tier">Tier 1</span>
+          </div>
+          <div class="desc">Financial procedures: owner statements, monthly allocations, expense classification rules.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPANSION: Properties -->
+  <div class="subhead">
+    <span>Inside Properties</span>
+    <span class="line"></span>
+  </div>
+
+  <div class="expansion" style="--i:11">
+    <div class="expansion-anchor">
+      <div class="label">🏠 Properties · Tier 1</div>
+      <div class="name">One folder per active property</div>
+      <div class="hint">Property folders are created by Chad at launch. Same subfolder structure applies across all 15 active listings.</div>
+    </div>
+    <div class="expansion-children">
+      <div class="child-row cols-3">
+        <div class="child-card t3">
+          <div class="row">
+            <div class="name">📷 Photos</div>
+            <span class="mini-tier">Tier 3</span>
+          </div>
+          <div class="desc">Listing photos, ad-hoc reference shots, before / after stages.</div>
+        </div>
+        <div class="child-card t3">
+          <div class="row">
+            <div class="name">📖 Guest Guides</div>
+            <span class="mini-tier">Tier 3</span>
+          </div>
+          <div class="desc">Welcome book, instruction cards, local recommendations.</div>
+        </div>
+        <div class="child-card t3">
+          <div class="row">
+            <div class="name">📜 Licence &amp; Permits</div>
+            <span class="mini-tier">Tier 3</span>
+          </div>
+          <div class="desc">STR licence (where applicable), insurance, owner-specific paperwork.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER CALLOUTS for Section 1 -->
+  <div class="callout-row">
+    <div class="callout primary" style="--i:12">
+      <strong>Live inventory.</strong> The full searchable list of every SOP lives at
+      <code>SOP_CANONICAL_INDEX.gsheet</code> in the Drive root. Use that spreadsheet for fast lookup before browsing folders.
+    </div>
+    <div class="callout secondary" style="--i:13">
+      <strong>Need somewhere new?</strong> Don't create a new top-level folder. Search first, ask in
+      <code>#all-eco-escapes-team</code>, then follow the Decision Flow below. New top-level folders are Chad's call.
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 2 — DECISION FLOW                                    -->
+  <!-- ============================================================ -->
+
+  <div class="section-marker">
+    <span class="num">Section 02</span>
+    <h2>Adding or updating documents</h2>
+    <span class="line"></span>
+  </div>
+  <p class="section-blurb">Three rules govern every decision below: <strong style="color:var(--forest)">find before you create, update over replace, archive instead of delete</strong>.
+  Pick the lane that matches what you're trying to do and follow the steps. The same flow applies to a new SOP, a renters agreement update, or an obsolete checklist.</p>
+
+  <!-- THREE RULES -->
+  <div class="three-rules">
+    <div class="rule" style="--i:0">
+      <div class="rule-num">Rule 01</div>
+      <div class="rule-text">Find before you create. Always search Drive first.</div>
+    </div>
+    <div class="rule" style="--i:1">
+      <div class="rule-num">Rule 02</div>
+      <div class="rule-text">Update over replace. Don't make parallel copies.</div>
+    </div>
+    <div class="rule" style="--i:2">
+      <div class="rule-num">Rule 03</div>
+      <div class="rule-text">Archive, never delete. Old content moves to ARCHIVE.</div>
+    </div>
+  </div>
+
+  <!-- QUESTION CARD -->
+  <div class="question-card" style="--i:3">
+    <span class="q-label">Start here</span>
+    <span class="q-text">What do you need to do with a document?</span>
+  </div>
+
+  <!-- 4 LANES -->
+  <div class="lanes">
+
+    <!-- LANE 1: FIND -->
+    <div class="lane" style="--i:4">
+      <div class="lane-header">
+        <div class="lane-icon">🔍</div>
+        <div>
+          <div class="lane-title">Lane 01</div>
+          <div class="lane-name">Find existing</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Step 1</div>
+        <div class="step-text">Search Drive</div>
+        <div class="step-detail">By name <em>and</em> by content. Drive search covers both.</div>
+      </div>
+      <div class="connector"></div>
+      <div class="step decision">
+        <div class="step-num">Decision</div>
+        <div class="step-text">Found it?</div>
+        <div class="step-detail">Yes → use it. No → continue.</div>
+      </div>
+      <div class="connector"></div>
+      <div class="step">
+        <div class="step-num">Step 2</div>
+        <div class="step-text">Check the canonical index</div>
+        <div class="step-detail"><code>SOP_CANONICAL_INDEX.gsheet</code> at Drive root.</div>
+      </div>
+      <div class="connector"></div>
+      <div class="step">
+        <div class="step-num">Step 3</div>
+        <div class="step-text">Ask in Slack</div>
+        <div class="step-detail">Post in <code>#all-eco-escapes-team</code> or DM Chad.</div>
+      </div>
+      <div class="outcome">
+        <div class="out-label">Outcome</div>
+        <div class="out-text">Use the existing doc</div>
+      </div>
+    </div>
+
+    <!-- LANE 2: UPDATE -->
+    <div class="lane update" style="--i:5">
+      <div class="lane-header">
+        <div class="lane-icon">✏️</div>
+        <div>
+          <div class="lane-title">Lane 02</div>
+          <div class="lane-name">Update something</div>
+        </div>
+      </div>
+
+      <div class="step decision">
+        <div class="step-num">Decision</div>
+        <div class="step-text">What kind of change?</div>
+      </div>
+      <div class="connector"></div>
+      <div class="step">
+        <div class="step-num">Path A · Small fix</div>
+        <div class="step-text">Edit in place</div>
+        <div class="step-detail">Typo, fee update, link fix. Bump <strong>Last Updated</strong> in the footer.</div>
+      </div>
+      <div class="connector"></div>
+      <div class="step">
+        <div class="step-num">Path B · New section</div>
+        <div class="step-text">Edit + changelog</div>
+        <div class="step-detail">Add a one-line note about what changed. Bump version.</div>
+      </div>
+      <div class="connector"></div>
+      <div class="step">
+        <div class="step-num">Path C · Big rewrite</div>
+        <div class="step-text">Archive old, create new</div>
+        <div class="step-detail">Rename old as <code>[ARCHIVED Mon YYYY]</code>, move to ARCHIVE, create new in correct folder.</div>
+      </div>
+      <div class="outcome">
+        <div class="out-label">Outcome</div>
+        <div class="out-text">Doc reflects reality</div>
+      </div>
+    </div>
+
+    <!-- LANE 3: CREATE NEW -->
+    <div class="lane create" style="--i:6">
+      <div class="lane-header">
+        <div class="lane-icon">➕</div>
+        <div>
+          <div class="lane-title">Lane 03</div>
+          <div class="lane-name">Create new</div>
+        </div>
+      </div>
+
+      <div class="stop-banner">
+        <div class="stop-label">⚠ Stop &amp; check</div>
+        <div class="stop-text">Run the before-create check first</div>
+      </div>
+      <div class="connector"></div>
+      <div class="step">
+        <div class="step-num">Step 1</div>
+        <div class="step-text">Search Drive</div>
+        <div class="step-detail">Name and content. Drive search covers both.</div>
+      </div>
+      <div class="connector"></div>
+      <div class="step">
+        <div class="step-num">Step 2</div>
+        <div class="step-text">Check canonical index</div>
+        <div class="step-detail"><code>SOP_CANONICAL_INDEX.gsheet</code></div>
+      </div>
+      <div class="connector"></div>
+      <div class="step">
+        <div class="step-num">Step 3</div>
+        <div class="step-text">Ask in Slack</div>
+        <div class="step-detail">Quick post in <code>#all-eco-escapes-team</code>.</div>
+      </div>
+      <div class="connector"></div>
+      <div class="step decision">
+        <div class="step-num">Decision</div>
+        <div class="step-text">Truly new?</div>
+        <div class="step-detail">No → update existing instead. Yes → continue.</div>
+      </div>
+      <div class="connector"></div>
+      <div class="step">
+        <div class="step-num">Step 4</div>
+        <div class="step-text">Follow the SOP &amp; Playbook Creation Guide</div>
+        <div class="step-detail">Title · Quick Info · Overview · numbered steps · Stage Gate · Document Info footer.</div>
+      </div>
+      <div class="outcome">
+        <div class="out-label">Outcome</div>
+        <div class="out-text">New doc in correct folder</div>
+      </div>
+    </div>
+
+    <!-- LANE 4: ARCHIVE -->
+    <div class="lane archive-lane" style="--i:7">
+      <div class="lane-header">
+        <div class="lane-icon">📦</div>
+        <div>
+          <div class="lane-title">Lane 04</div>
+          <div class="lane-name">Archive old doc</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Step 1</div>
+        <div class="step-text">Rename the doc</div>
+        <div class="step-detail">Prefix with <code>[ARCHIVED Mon YYYY]</code>.</div>
+      </div>
+      <div class="connector"></div>
+      <div class="step">
+        <div class="step-num">Step 2</div>
+        <div class="step-text">Move to ARCHIVE folder</div>
+        <div class="step-detail"><code>📚 ARCHIVE/📋 Deprecated SOPs/</code></div>
+      </div>
+      <div class="connector"></div>
+      <div class="step decision">
+        <div class="step-num">Rule</div>
+        <div class="step-text">Never delete</div>
+        <div class="step-detail">Trash is rare — only for never-canonical drafts. Ask Chad first.</div>
+      </div>
+      <div class="outcome">
+        <div class="out-label">Outcome</div>
+        <div class="out-text">Preserved in ARCHIVE</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SECTION 2 FOOTER -->
+  <div class="callout primary" style="--i:8">
+    <strong>Print this page.</strong> Pin it in your workspace, save the PNG to your phone, or bookmark the Drive link.
+    The same flow applies whether you're adding a new SOP, updating a fee in a renters agreement, or archiving an obsolete checklist.
+  </div>
+
+  <!-- DOCUMENT FOOTER -->
+  <div class="doc-footer">
+    <div>Eco Escapes Operating Guide · v2.1</div>
+    <div>Last updated: April 2026 · Owner: Chad Harker</div>
+  </div>
+
+</div>
+</body>
+</html>
