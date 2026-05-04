@@ -384,6 +384,8 @@
 
   .child-row { display: grid; grid-template-columns: 1fr; gap: 10px; }
   .child-row.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .child-row.cols-4 { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  @media (min-width: 900px) { .child-row.cols-4 { grid-template-columns: repeat(4, 1fr); } }
 
   .child-card {
     background: var(--surface);
@@ -927,7 +929,7 @@
         <div class="name"><span class="icon">📚</span>ARCHIVE</div>
         <span class="tier-badge archive">Archive</span>
       </div>
-      <div class="desc">Old documents and deprecated SOPs. Read-only. Anything obsolete moves here — never deleted.</div>
+      <div class="desc">Old documents, deprecated SOPs, and offboarded properties (under <code>Archived Properties/</code>). Read-only. Anything obsolete moves here — never deleted.</div>
       <div class="ask">Ask: <strong>Chad</strong> before anything is removed</div>
     </div>
   </div>
@@ -941,11 +943,11 @@
   <div class="expansion" style="--i:10">
     <div class="expansion-anchor">
       <div class="label">📋 SOPs (Master) · Tier 1</div>
-      <div class="name">3 working subfolders</div>
+      <div class="name">4 working subfolders</div>
       <div class="hint">All team-facing procedures, organized by domain. Search SOP_CANONICAL_INDEX.gsheet before browsing.</div>
     </div>
     <div class="expansion-children">
-      <div class="child-row cols-3">
+      <div class="child-row cols-4">
         <div class="child-card">
           <div class="row">
             <div class="name">🏠 Operations</div>
@@ -967,6 +969,13 @@
           </div>
           <div class="desc">Financial procedures: owner statements, monthly allocations, expense classification rules.</div>
         </div>
+        <div class="child-card t1">
+          <div class="row">
+            <div class="name">📐 Governance</div>
+            <span class="mini-tier">Tier 1</span>
+          </div>
+          <div class="desc">Drive rules, SOP/playbook creation guide, naming conventions, structure governance.</div>
+        </div>
       </div>
     </div>
   </div>
@@ -981,7 +990,7 @@
     <div class="expansion-anchor">
       <div class="label">🏠 Properties · Tier 1</div>
       <div class="name">One folder per active property</div>
-      <div class="hint">Property folders are created by Chad at launch. Same subfolder structure applies across all 15 active listings.</div>
+      <div class="hint">Property folders are created by Chad at launch. Same subfolder structure applies across all 17 active listings.</div>
     </div>
     <div class="expansion-children">
       <div class="child-row cols-3">
@@ -1230,7 +1239,7 @@
   <!-- DOCUMENT FOOTER -->
   <div class="doc-footer">
     <div>Eco Escapes Operating Guide · v2.1</div>
-    <div>Last updated: April 2026 · Owner: Chad Harker</div>
+    <div>Last updated: May 2026 · Version 2.5 · Owner: Chad Harker</div>
   </div>
 
 </div>
